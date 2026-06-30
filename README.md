@@ -36,9 +36,108 @@ The dataset is built from:
 - Preserve multi-turn conversation structure
 - Cap at 10M words (strict-small budget)
 
+
+Model & Training
+Architecture: Vanilla GPT-2 (no custom modeling)
+
+Size: ~51.5M parameters (8 layers, 512 hidden, 8 attention heads)
+Vocab: Stock GPT-2 (50,257 tokens)
+Training: 10 epochs on 10M-word corpus → 100M total words
+Checkpoints: Saved every 1M words (19 intermediate checkpoints)
+Training on Kaggle (recommended):
+
+Create a new Kaggle notebook
+Upload babylm-gpt2-baseline/ repo and childes_10m.jsonl data as datasets
+Paste the training cell from this notebook's training version
+Settings: GPU T4 ×2, Internet ON
+Click Save Version → Save & Run All (Commit)
+Training runs ~10 hours; checkpoints auto-save to Output
+
+Evaluation
+Evaluate on BabyLM zero-shot fast tasks:
+
+BLiMP (67 syntactic paradigms, 200-item sample)
+Supplement (50 items)
+EWoK (100 items)
+Entity Tracking (fast sample)
+WUG morphology (adj nominalization, past tense)
+Reading (eye-tracking/self-paced reading correlations)
+Quick eval (Kaggle):
+
+Create a new Kaggle notebook
+Add your training notebook's output as input
+Paste the eval cells from the guide
+Settings: GPU T4 ×2, Internet ON
+Click Save Version → Save & Run All (Commit)
+Eval runs ~2–3 hours; results saved to Output as CSV
+
 Output: Turn-structured JSONL, one conversation per line.
 
 ```bash
 python build_childes_dataset.py --out data/childes_10m.jsonl
 # Optional: add UK data
 python build_childes_dataset.py --out data/childes_10m.jsonl --uk-dir ./Eng-UK
+
+
+
+childes-babylm/
+├── build_childes_dataset.py          # CHILDES extraction & cleaning
+├── convert_checkpoint_to_hf.py       # PyTorch → HuggingFace conversion
+├── download_eval_data.py             # Download eval data from OSF
+│
+├── babylm-gpt2-baseline/             # Training pipeline (cloned from official repo)
+│   ├── config.yaml                   # Hyperparameters (data_source, model size, etc.)
+│   ├── training.py                   # Training loop
+│   ├── models.py                     # Model initialization
+│   ├── data_utils.py                 # Data loading (w/ CHILDESConversationDataset)
+│   ├── utils.py                      # Config + logging
+│   ├── configs/10m/                  # GPT-2 config (8L/512H/8H, 51.5M params)
+│   └── tokenizers/10m/               # Stock GPT-2 tokenizer
+│
+├── evaluation-pipeline-2025/         # Official BabyLM eval pipeline (cloned)
+│   ├── eval_zero_shot_fast.sh        # Run fast evals
+│   ├── evaluation_pipeline/          # Python modules for scoring
+│   └── evaluation_data/              # Task data (downloaded from OSF)
+│
+├── data/
+│   └── childes_10m.jsonl             # Preprocessed CHILDES corpus (~10M words)
+│
+└── README.md                         # This file
+
+
+Key Changes Made
+Compared to the official babylm-gpt2-baseline:
+
+data_utils.py: Added CHILDESConversationDataset class to load turn-structured JSONL
+training.py:
+Fixed scheduler step count (calculate from actual dataloader length)
+Device-conditional autocast (bf16 on CUDA, fp32 on CPU)
+Guarded intermediate checkpoint division
+config.yaml:
+data_source: "childes_jsonl" → route to CHILDES loader
+childes_jsonl_path: "data/childes_10m.jsonl"
+training_type: "strict_small" → BabyLM strict-small rules
+models.py: Wrapped vllm import (not needed for training, only eval)
+New files:
+
+build_childes_dataset.py — CHILDES → JSONL
+convert_checkpoint_to_hf.py — PyTorch checkpoint → HF directory
+download_eval_data.py — OSF → evaluation_data/
+babylm-gpt2-baseline/configs/10m/ — Small model config
+babylm-gpt2-baseline/tokenizers/10m/ — GPT-2 tokenizer
+Reproducibility
+Exact command to reproduce (Kaggle):
+
+Upload this repo + childes_10m.jsonl as datasets to Kaggle
+Create a new notebook; add them as inputs
+Use the training cell from the committed training version
+Save Version → Save & Run All
+Once complete, create an eval notebook; add training output as input
+Use the eval cells; save version
+All randomness is seeded (seed: -1 in config uses a fixed default).
+
+Citations
+CHILDES/TalkBank: MacWhinney, B. (2000). The CHILDES project: Tools for analyzing talk (3rd ed.). Mahwah, NJ: Erlbaum.
+BabyLM Challenge: babylm.github.io
+Evaluation pipeline: babylm/evaluation-pipeline-2025
+
