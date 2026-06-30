@@ -5,6 +5,17 @@ GPT-2 language model trained on CHILDES child-directed speech for the BabyLM cha
 
 A GPT-2 language model trained from scratch on **CHILDES child-directed speech** for the [BabyLM Challenge](https://babylm.github.io/) (strict-small track: ≤10M words, 10 epochs).
 
+IMPORTANT NOTE FOR GETTING DATASET
+## Getting the Data & Checkpoints
+
+Due to GitHub's file size limits, large files are not included in this repo.
+
+**To reproduce:**
+1. Clone this repo
+2. Run: `python build_childes_dataset.py --out data/childes_10m.jsonl`
+3. Follow the Kaggle training instructions to generate checkpoints
+
+
 ## Results
 
 Fast-eval zero-shot scores on all 19 training checkpoints (1M → 100M words):
