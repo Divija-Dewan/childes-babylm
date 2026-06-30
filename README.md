@@ -3,7 +3,7 @@ GPT-2 language model trained on CHILDES child-directed speech for the BabyLM cha
 
 # CHILDES GPT-2 for BabyLM Challenge
 
-A GPT-2 language model trained from scratch on **CHILDES child-directed speech** for the [BabyLM 2024 Challenge](https://babylm.github.io/) (strict-small track: ≤10M words, 10 epochs).
+A GPT-2 language model trained from scratch on **CHILDES child-directed speech** for the [BabyLM Challenge](https://babylm.github.io/) (strict-small track: ≤10M words, 10 epochs).
 
 ## Results
 
