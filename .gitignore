@@ -1,0 +1,28 @@
+# Data files
+data/childes_10m.jsonl
+data/text_data/
+data/*.jsonl
+
+# Training checkpoints (too large)
+experiments/
+babylm-gpt2-baseline/experiments/
+babylm-gpt2-baseline/.pt
+*.pt
+
+# Evaluation outputs
+evaluation-pipeline-2025/results/
+evaluation-pipeline-2025/evaluation_data/
+
+# Kaggle-specific
+*.csv
+*.txt
+
+# Python
+__pycache__/
+*.pyc
+.env
+.venv/
+
+# IDE
+.vscode/
+.idea/
