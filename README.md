@@ -9,13 +9,11 @@ A GPT-2 language model trained from scratch on **CHILDES child-directed speech**
 
 Fast-eval zero-shot scores on all 19 training checkpoints (1M → 100M words):
 
-| Checkpoint | BLiMP | Supplement | EWoK | Entity Tracking | WUG-adj | WUG-past | Reading | Avg (acc) |
-|---|---|---|---|---|---|---|---|---|
-| chck_1M | ... | ... | ... | ... | ... | ... | ... | ... |
-| chck_10M | ... | ... | ... | ... | ... | ... | ... | ... |
-| chck_100M | ... | ... | ... | ... | ... | ... | ... | ... |
+| Checkpoint | BLiMP | Supplement | EWoK | Entity Tracking | Reading | 
 
-*(Insert your actual numbers from the CSV)*
+| chck_100M | 57.56 | 58.8        | 49.27| 19.07           | 0.01 | 
+
+
 
 **Key finding:** Model trained on conversational child-language data achieves **equivalent or better** zero-shot performance compared to standard corpus approaches.
 
